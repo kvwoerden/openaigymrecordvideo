@@ -12,9 +12,6 @@ from gym import wrappers, logger
 
 import numpy as np
 
-from gym.wrappers.monitoring.video_recorder import VideoRecorder
-
-
 class RandomAgent(object):
     """The world's simplest agent!"""
     def __init__(self, action_space):
@@ -39,25 +36,22 @@ if __name__ == '__main__':
     # directory, including one with existing data -- all monitor files
     # will be namespaced). You can also dump to a tempdir if you'd
     # like: tempfile.mkdtemp().
-    # outdir = '/tmp/random-agent-results'
-    # env = wrappers.Monitor(env, directory=outdir, force=True)
+    outdir = './video/random-agent-results'
+    env = wrappers.Monitor(env, directory=outdir, force=True)
     env.seed(0)
     agent = RandomAgent(env.action_space)
 
-    episode_count = 10
+    episode_count = 2
     reward = 0
     done = False
 
     for i in range(episode_count):
         ob = env.reset()
-        rec = VideoRecorder(env, path='./video/output' + str(i) + '.mp4')
         while True:
             env.render()
-            rec.capture_frame()
             action = agent.act(ob, reward, done)
             ob, reward, done, _ = env.step(action)
             if done:
-                rec.close()
                 break
             # Note there's no env.render() here. But the environment still can open window and
             # render if asked by env.monitor: it calls env.render('rgb_array') to record video.
